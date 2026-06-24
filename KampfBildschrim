@@ -1,0 +1,161 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class KampfBildschirm extends JPanel {
+    private SpielFenster fenster;
+    private JProgressBar balken1;
+    private JProgressBar balken2;
+    public boolean spieler1IstDran = true;
+    public JLabel statusAnzeige;
+
+    public KampfBildschirm(SpielFenster fenster) {
+        this.fenster = fenster;
+    }
+
+    public void kampfStarten(Figur spieler1, Figur spieler2, String modus) {
+        removeAll();
+        spieler1IstDran = true;
+        setLayout(new BorderLayout());
+
+        JPanel obenPanel = new JPanel(new GridLayout(2, 1));
+        JLabel ueberschrift = new JLabel("Modus: " + modus, SwingConstants.CENTER);
+        statusAnzeige = new JLabel(spieler1.name + " ist am Zug!", SwingConstants.CENTER);
+        statusAnzeige.setFont(new Font("Arial", Font.BOLD, 20));
+
+        obenPanel.add(ueberschrift);
+        obenPanel.add(statusAnzeige);
+        add(obenPanel, BorderLayout.NORTH);
+
+        JPanel arena = new JPanel(new GridLayout(1, 2));
+
+        JPanel p1 = erstelleSpieler1Panel(spieler1, spieler2);
+        JPanel p2 = erstelleSpieler2Panel(spieler1, spieler2);
+
+        arena.add(p1);
+        arena.add(p2);
+
+        add(arena, BorderLayout.CENTER);
+        revalidate();
+        repaint();
+    }
+
+    public JPanel erstelleSpieler1Panel(Figur spieler1, Figur spieler2) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel name = new JLabel(spieler1.name);
+
+        JProgressBar hp = new JProgressBar(0, 200);
+        hp.setValue((int) spieler1.leben);
+        hp.setStringPainted(true);
+        hp.setString(spieler1.leben + " HP");
+        balken1 = hp;
+
+        JLabel bild = new JLabel();
+        ImageIcon icon = new ImageIcon(spieler1.bildPfad);
+        bild.setIcon(icon);
+
+        JButton angriff = new JButton("Angreifen");
+        JButton verteidigen = new JButton("Verteidigen");
+
+        angriff.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spieler1IstDran == true) {
+                    spieler1.angreifen(spieler2);
+
+                    balken1.setValue((int) spieler1.leben);
+                    balken1.setString(spieler1.leben + " HP");
+
+                    balken2.setValue((int) spieler2.leben);
+                    balken2.setString(spieler2.leben + " HP");
+
+                    if (spieler2.leben <= 0) {
+                        JOptionPane.showMessageDialog(null, spieler1.name + " hat gewonnen!");
+                    } else {
+                        spieler1IstDran = false;
+                        statusAnzeige.setText(spieler2.name + " ist am Zug!");
+                    }
+                }
+            }
+        });
+
+        verteidigen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spieler1IstDran == true) {
+                    spieler1.verteidigen();
+                    spieler1IstDran = false;
+                    statusAnzeige.setText(spieler2.name + " ist am Zug!");
+                }
+            }
+        });
+
+        panel.add(name);
+        panel.add(hp);
+        panel.add(bild);
+        panel.add(angriff);
+        panel.add(verteidigen);
+
+        return panel;
+    }
+
+    public JPanel erstelleSpieler2Panel(Figur spieler1, Figur spieler2) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel name = new JLabel(spieler2.name);
+
+        JProgressBar hp = new JProgressBar(0, 200);
+        hp.setValue((int) spieler2.leben);
+        hp.setStringPainted(true);
+        hp.setString(spieler2.leben + " HP");
+        balken2 = hp;
+
+        JLabel bild = new JLabel();
+        ImageIcon icon = new ImageIcon(spieler2.bildPfad);
+        bild.setIcon(icon);
+
+        JButton angriff = new JButton("Angreifen");
+        JButton verteidigen = new JButton("Verteidigen");
+
+        angriff.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spieler1IstDran == false) {
+                    spieler2.angreifen(spieler1);
+
+                    balken1.setValue((int) spieler1.leben);
+                    balken1.setString(spieler1.leben + " HP");
+
+                    balken2.setValue((int) spieler2.leben);
+                    balken2.setString(spieler2.leben + " HP");
+
+                    if (spieler1.leben <= 0) {
+                        JOptionPane.showMessageDialog(null, spieler2.name + " hat gewonnen!");
+                    } else {
+                        spieler1IstDran = true;
+                        statusAnzeige.setText(spieler1.name + " ist am Zug!");
+                    }
+                }
+            }
+        });
+
+        verteidigen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spieler1IstDran == false) {
+                    spieler2.verteidigen();
+                    spieler1IstDran = true;
+                    statusAnzeige.setText(spieler1.name + " ist am Zug!");
+                }
+            }
+        });
+
+        panel.add(name);
+        panel.add(hp);
+        panel.add(bild);
+        panel.add(angriff);
+        panel.add(verteidigen);
+
+        return panel;
+    }
+}
