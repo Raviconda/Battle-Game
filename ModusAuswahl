@@ -1,0 +1,39 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class ModusAuswahl extends JPanel {
+    private SpielFenster fenster;
+
+    public ModusAuswahl(SpielFenster fenster) {
+        this.fenster = fenster;
+        setLayout(new GridLayout(3, 1));
+
+        JButton vs = new JButton("1 vs 1");
+        JButton wellen = new JButton("Wellenspiel");
+        JButton team = new JButton("Teamkampf");
+
+        vs.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                fenster.spielStarten("1 vs 1");
+            }
+        });
+
+        wellen.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                fenster.spielStarten("Wellenspiel");
+            }
+        });
+
+        team.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                fenster.spielStarten("Teamkampf");
+            }
+        });
+
+        add(vs);
+        add(wellen);
+        add(team);
+    }
+}
