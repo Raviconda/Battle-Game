@@ -1,0 +1,113 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class CharakterAuswahl extends JPanel {
+    private SpielFenster fenster;
+    private Figur wahl1;
+    private Figur wahl2;
+
+    public CharakterAuswahl(SpielFenster fenster) {
+        this.fenster = fenster;
+        setLayout(new BorderLayout());
+
+        JPanel spielerBereich = new JPanel(new GridLayout(1, 2));
+
+        JPanel p1 = erstelleSpielerPanel("Spieler 1");
+        JPanel p2 = erstelleSpielerPanel("Spieler 2");
+
+        spielerBereich.add(p1);
+        spielerBereich.add(p2);
+        add(spielerBereich, BorderLayout.CENTER);
+
+        JButton weiter = new JButton("Weiter");
+        weiter.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (wahl1 != null && wahl2 != null) {
+                    fenster.figurenSpeichern(wahl1, wahl2);
+                }
+            }
+        });
+        add(weiter, BorderLayout.SOUTH);
+    }
+
+    public JPanel erstelleSpielerPanel(String spielerName) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel label = new JLabel(spielerName + " Name:");
+        JTextField feld = new JTextField();
+        feld.setMaximumSize(new Dimension(200, 30));
+
+        JButton krieger = new JButton("Krieger");
+        JButton magier = new JButton("Magier");
+        JButton heiler = new JButton("Heiler");
+        JButton untoter = new JButton("Untoter");
+
+        krieger.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spielerName.equals("Spieler 1")) {
+                    wahl1 = new Krieger(feld.getText());
+                } else {
+                    wahl2 = new Krieger(feld.getText());
+                }
+                krieger.setBackground(Color.GREEN);
+                magier.setBackground(null);
+                heiler.setBackground(null);
+                untoter.setBackground(null);
+            }
+        });
+
+        magier.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spielerName.equals("Spieler 1")) {
+                    wahl1 = new Magier(feld.getText());
+                } else {
+                    wahl2 = new Magier(feld.getText());
+                }
+                magier.setBackground(Color.GREEN);
+                krieger.setBackground(null);
+                heiler.setBackground(null);
+                untoter.setBackground(null);
+            }
+        });
+
+        heiler.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spielerName.equals("Spieler 1")) {
+                    wahl1 = new Heiler(feld.getText());
+                } else {
+                    wahl2 = new Heiler(feld.getText());
+                }
+                heiler.setBackground(Color.GREEN);
+                krieger.setBackground(null);
+                magier.setBackground(null);
+                untoter.setBackground(null);
+            }
+        });
+
+        untoter.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if (spielerName.equals("Spieler 1")) {
+                    wahl1 = new Untoter(feld.getText());
+                } else {
+                    wahl2 = new Untoter(feld.getText());
+                }
+                untoter.setBackground(Color.GREEN);
+                krieger.setBackground(null);
+                magier.setBackground(null);
+                heiler.setBackground(null);
+            }
+        });
+
+        panel.add(label);
+        panel.add(feld);
+        panel.add(krieger);
+        panel.add(magier);
+        panel.add(heiler);
+        panel.add(untoter);
+
+        return panel;
+    }
+}
