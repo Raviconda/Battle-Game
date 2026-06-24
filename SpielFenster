@@ -1,0 +1,46 @@
+import javax.swing.*;
+import java.awt.*;
+
+public class SpielFenster extends JFrame {
+    public CardLayout layout;
+    public JPanel hauptPanel;
+    public Figur spieler1;
+    public Figur spieler2;
+    public KampfBildschirm kampfPanel;
+
+    public SpielFenster() {
+        setTitle("Battle Game");
+        setSize(900, 600);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        layout = new CardLayout();
+        hauptPanel = new JPanel(layout);
+
+        CharakterAuswahl auswahl = new CharakterAuswahl(this);
+        ModusAuswahl modus = new ModusAuswahl(this);
+        kampfPanel = new KampfBildschirm(this);
+
+        hauptPanel.add(auswahl, "auswahl");
+        hauptPanel.add(modus, "modus");
+        hauptPanel.add(kampfPanel, "kampf");
+
+        add(hauptPanel);
+        layout.show(hauptPanel, "auswahl");
+    }
+
+    public void figurenSpeichern(Figur s1, Figur s2) {
+        spieler1 = s1;
+        spieler2 = s2;
+        layout.show(hauptPanel, "modus");
+    }
+
+    public void spielStarten(String modusName) {
+        kampfPanel.kampfStarten(spieler1, spieler2, modusName);
+        layout.show(hauptPanel, "kampf");
+    }
+
+    public static void main(String[] args) {
+        SpielFenster fenster = new SpielFenster();
+        fenster.setVisible(true);
+    }
+}
